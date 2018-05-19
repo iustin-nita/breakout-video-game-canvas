@@ -28,6 +28,7 @@ let brickRowCount = 5,
 
 let bricks = [];
 let score = 0;
+let lives = 3;
 
 for (let c=0; c < brickColumnCount; c++) {
     bricks[c] = [];
@@ -37,7 +38,6 @@ for (let c=0; c < brickColumnCount; c++) {
 }
 
 function drawBricks() {
-    console.log(bricks);
     for (let c = 0; c<brickColumnCount; c++) {
         for (let r = 0; r<brickRowCount; r++) {
             if (bricks[c][r].status === 1) {
@@ -53,7 +53,6 @@ function drawBricks() {
             }  
         }
     }
-    console.log(bricks);
 }
 
 function drawBall() {
@@ -72,15 +71,20 @@ function drawPaddle() {
     context.closePath();
 }
 
+function drawLives() {
+  context.font = "16px Arial";
+  context.fillStyle = "#0095DD";
+  context.fillText("Lives: " + lives, canvas.width - 65, 20);
+}
+
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
     drawScore();
     drawBall();
+    drawLives();
     collisionDetection();
-    console.log(rightPressed);
-    console.log(leftPressed);
 
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
         paddleX += 5;
@@ -103,9 +107,17 @@ function draw() {
         if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy - 0.1;
         } else {
-            // alert("game over");
-            console.log(`Game over! You have ${score} points`);
-            document.location.reload();
+            lives--;
+            if (!lives) {
+              console.log(`Game over! You have ${score} points`);
+              document.location.reload();
+            } else {
+              x = canvas.width / 2;
+              y = canvas.height - 30;
+              dx = 2;
+              dy = -2;
+              paddleX = (canvas.width - paddleWidth) / 2;
+            }
         }
     }
 
@@ -135,6 +147,13 @@ function keyUpHandler(event) {
     } else if (event.keyCode === 39) {
         rightPressed = false;
     }
+}
+
+function mouseMoveHandler(e) {
+  var relativeX = e.clientX - canvas.offsetLeft;
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
+  }
 }
 
 function collisionDetection() {
@@ -167,5 +186,6 @@ function drawScore() {
 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
 
 setInterval(draw, 10);
