@@ -31,7 +31,7 @@ let bricks = [];
 for (let c=0; c < brickColumnCount; c++) {
     bricks[c] = [];
     for (let r=0; r < brickRowCount; r++) {
-        bricks[c][r] = { x:0, y:0 };
+        bricks[c][r] = { x:0, y:0, status: 1 };
     }
 }
 
@@ -39,15 +39,17 @@ function drawBricks() {
     console.log(bricks);
     for (let c = 0; c<brickColumnCount; c++) {
         for (let r = 0; r<brickRowCount; r++) {
-            let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft,
-                brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
-            context.beginPath();
-            context.rect(brickX, brickY, brickWidth, brickHeight);
-            context.fillStyle = "#DD4A68";
-            context.fill(); 
-            context.closePath();    
+            if (bricks[c][r].status === 1) {
+                let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft,
+                    brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                context.beginPath();
+                context.rect(brickX, brickY, brickWidth, brickHeight);
+                context.fillStyle = "#DD4A68";
+                context.fill(); 
+                context.closePath();  
+            }  
         }
     }
     console.log(bricks);
@@ -74,6 +76,7 @@ function draw() {
     drawBricks();
     drawPaddle();
     drawBall();
+    collisionDetection();
     console.log(rightPressed);
     console.log(leftPressed);
 
@@ -96,7 +99,7 @@ function draw() {
         ballColor = colors[getRandomInt(0, colors.length)];
     } else if (y + dy > canvas.height - ballRadius) {
         if (x > paddleX && x < paddleX + paddleWidth) {
-            dy = -dy - 1;
+            dy = -dy - 0.1;
         } else {
             // alert("game over");
             document.location.reload();
@@ -129,6 +132,23 @@ function keyUpHandler(event) {
     } else if (event.keyCode === 39) {
         rightPressed = false;
     }
+}
+
+function collisionDetection() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      let b = bricks[c][r];
+      // calculations
+      if (b.status === 1) {
+          if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+              console.log('COLLISION');
+              b.status = 0;
+              ballColor = colors[getRandomInt(0, colors.length)];
+              dy = -dy;
+          }
+      }
+    }
+  }
 }
 
 document.addEventListener('keydown', keyDownHandler, false);
