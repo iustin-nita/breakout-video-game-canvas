@@ -18,6 +18,41 @@ let paddleHeight = 10,
 let leftPressed = false,
     rightPressed = false;
 
+let brickRowCount = 5,
+    brickColumnCount = 8,
+    brickWidth = 45,
+    brickHeight = 15,
+    brickPadding = 11,
+    brickOffsetTop = 20,
+    brickOffsetLeft = 20;
+
+let bricks = [];
+
+for (let c=0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (let r=0; r < brickRowCount; r++) {
+        bricks[c][r] = { x:0, y:0 };
+    }
+}
+
+function drawBricks() {
+    console.log(bricks);
+    for (let c = 0; c<brickColumnCount; c++) {
+        for (let r = 0; r<brickRowCount; r++) {
+            let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft,
+                brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            context.beginPath();
+            context.rect(brickX, brickY, brickWidth, brickHeight);
+            context.fillStyle = "#DD4A68";
+            context.fill(); 
+            context.closePath();    
+        }
+    }
+    console.log(bricks);
+}
+
 function drawBall() {
     context.beginPath();
     context.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -36,6 +71,7 @@ function drawPaddle() {
 
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    drawBricks();
     drawPaddle();
     drawBall();
     console.log(rightPressed);
@@ -62,7 +98,7 @@ function draw() {
         if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy - 1;
         } else {
-            alert("game over");
+            // alert("game over");
             document.location.reload();
         }
     }
