@@ -11,6 +11,10 @@ let colors = ["red", "green", "yellow", "teal", "pink", "magenta"];
 let ballRadius = 10;
 let ballColor = colors[getRandomInt(0, colors.length)];
 
+let paddleHeight = 10;
+let paddleWidth = 70;
+let paddleX = (canvas.width - paddleWidth) / 2;
+
 function drawBall() {
     context.beginPath();
     context.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -19,9 +23,17 @@ function drawBall() {
     context.closePath();
 }
 
+function drawPaddle() {
+    context.beginPath();
+    context.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+    context.fillStyle = "magenta";
+    context.fill();
+    context.closePath();
+}
+
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    
+    drawPaddle();
     drawBall();
     
     x += dx;
