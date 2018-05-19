@@ -1,19 +1,22 @@
-let canvas = document.getElementById('myCanvas');
-let context = canvas.getContext('2d');
+let canvas = document.getElementById('myCanvas'),
+    context = canvas.getContext('2d');
 
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
+let x = canvas.width / 2,
+    y = canvas.height - 30,
+    dx = 2,
+    dy = -2;
 
 let colors = ["red", "green", "yellow", "teal", "pink", "magenta"];
 
-let ballRadius = 10;
-let ballColor = colors[getRandomInt(0, colors.length)];
+let ballRadius = 10,
+    ballColor = colors[getRandomInt(0, colors.length)];
 
-let paddleHeight = 10;
-let paddleWidth = 70;
-let paddleX = (canvas.width - paddleWidth) / 2;
+let paddleHeight = 10,
+    paddleWidth = 70,
+    paddleX = (canvas.width - paddleWidth) / 2;
+
+let leftPressed = false,
+    rightPressed = false;
 
 function drawBall() {
     context.beginPath();
@@ -35,7 +38,17 @@ function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawPaddle();
     drawBall();
-    
+    console.log(rightPressed);
+    console.log(leftPressed);
+
+    if (rightPressed && paddleX < canvas.width - paddleWidth) {
+        paddleX += 7;
+    }
+
+    if (leftPressed && paddleX > 0) {
+        paddleX -= 7;
+    }
+
     x += dx;
     y += dy;
 
@@ -58,5 +71,24 @@ function draw() {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function keyDownHandler(event) {
+    if (event.keyCode === 37) {
+        leftPressed = true;
+    } else if (event.keyCode === 39) {
+        rightPressed = true;
+    }
+}
+
+function keyUpHandler(event) {
+    if (event.keyCode === 37) {
+        leftPressed = false;
+    } else if (event.keyCode === 39) {
+        rightPressed = false;
+    }
+}
+
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
 
 setInterval(draw, 10);
