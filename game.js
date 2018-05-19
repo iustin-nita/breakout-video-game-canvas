@@ -12,7 +12,7 @@ let ballRadius = 10,
     ballColor = colors[getRandomInt(0, colors.length)];
 
 let paddleHeight = 10,
-    paddleWidth = 70,
+    paddleWidth = 80,
     paddleX = (canvas.width - paddleWidth) / 2;
 
 let leftPressed = false,
@@ -42,15 +42,12 @@ function draw() {
     console.log(leftPressed);
 
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
-        paddleX += 7;
+        paddleX += 5;
     }
 
     if (leftPressed && paddleX > 0) {
-        paddleX -= 7;
+        paddleX -= 5;
     }
-
-    x += dx;
-    y += dy;
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
@@ -58,10 +55,20 @@ function draw() {
 
     }
 
-    if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+    if (y + dy < ballRadius) {
         dy = -dy;
         ballColor = colors[getRandomInt(0, colors.length)];
+    } else if (y + dy > canvas.height - ballRadius) {
+        if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy - 1;
+        } else {
+            alert("game over");
+            document.location.reload();
+        }
     }
+
+    x += dx;
+    y += dy;
 }
 
 /**
