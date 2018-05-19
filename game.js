@@ -8,11 +8,11 @@ let x = canvas.width / 2,
 
 let colors = ["red", "green", "yellow", "teal", "pink", "magenta"];
 
-let ballRadius = 10,
+let ballRadius = 8,
     ballColor = colors[getRandomInt(0, colors.length)];
 
 let paddleHeight = 10,
-    paddleWidth = 80,
+    paddleWidth = 90,
     paddleX = (canvas.width - paddleWidth) / 2;
 
 let leftPressed = false,
@@ -27,6 +27,7 @@ let brickRowCount = 5,
     brickOffsetLeft = 20;
 
 let bricks = [];
+let score = 0;
 
 for (let c=0; c < brickColumnCount; c++) {
     bricks[c] = [];
@@ -75,6 +76,7 @@ function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
+    drawScore();
     drawBall();
     collisionDetection();
     console.log(rightPressed);
@@ -102,6 +104,7 @@ function draw() {
             dy = -dy - 0.1;
         } else {
             // alert("game over");
+            console.log(`Game over! You have ${score} points`);
             document.location.reload();
         }
     }
@@ -145,10 +148,21 @@ function collisionDetection() {
               b.status = 0;
               ballColor = colors[getRandomInt(0, colors.length)];
               dy = -dy;
+              score += 12;
+              if (score == brickRowCount * brickColumnCount * 12) {
+                alert(`YOU WIN, CONGRATULATIONS! You have ${score} points`);
+                document.location.reload();
+              }
           }
       }
     }
   }
+}
+
+function drawScore() {
+  context.font = "16px Arial";
+  context.fillStyle = "#0095DD";
+  context.fillText("Score: " + score, 8, 20);
 }
 
 document.addEventListener('keydown', keyDownHandler, false);
